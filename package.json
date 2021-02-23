@@ -28,7 +28,9 @@
   "devDependencies": {},
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "netlify-start": "./node_modules/.bin/netlify-lambda serve ./",
+    "netlify-build": "./node_modules/.bin/netlify-lambda build ./"
   },
   "author": "",
   "license": "ISC",
@@ -39,5 +41,8 @@
   "bugs": {
     "url": "https://github.com/ZenithWildRift/WildRift/issues"
   },
-  "homepage": "https://github.com/ZenithWildRift/WildRift#readme"
+  "homepage": "https://github.com/ZenithWildRift/WildRift#readme",
+  "engines": {
+    "node": "12.18.3"
+  }
 }

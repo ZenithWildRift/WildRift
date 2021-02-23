@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const serverless = require("serverless-http");
+var router = require("express").Router();
 const app = express();
 
 // DB connection
@@ -25,6 +27,13 @@ app.use(cookieParser());
 app.use(cors());
 
 //Register Routes
+router.get(`/`, (req, res)=> {
+  res.json({
+    message: "bpoom bam"
+  })
+})
+
+app.use('/.netlify/functions/app', router);
 app.use("/api", require('./routes/Auth'));
 app.use("/api", require('./routes/Match'));
 app.use("/api", require('./routes/User'));
@@ -38,3 +47,6 @@ app.listen(port , () => {
   console.log(`app is running at port ${port}`)
 });
 
+module.exports = app;
+
+module.exports.handler = serverless(app);
