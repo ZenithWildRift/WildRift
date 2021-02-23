@@ -6,8 +6,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 
+
 // DB connection
-mongoose.connect("mongodb+srv://zenith:zenith@zenithwildrift.td1rf.mongodb.net/zenithwildrift?retryWrites=true&w=majority",  {
+mongoose.connect(process.env.DATABASE1,  {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true
@@ -29,6 +30,8 @@ app.use("/api", require('./routes/Auth'));
 app.use("/api", require('./routes/Match'));
 app.use("/api", require('./routes/User'));
 app.use("/api", require('./routes/Characters'));
+
+
 
 // PORT
 const port = process.env.PORT || 8000;

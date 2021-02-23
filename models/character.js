@@ -6,16 +6,13 @@ var characterSchema = new mongoose.Schema({
     unique: true,
   },
   avatar: {
-    data: Buffer,
-    contentType: String
+    type: String,
   },
   portrait: {
-    data: Buffer,
-    contentType: String
+    type: String,
   },
   landscape: {
-    data: Buffer,
-    contentType: String
+    type: String,
   },
   id: {
     type: String,

@@ -1,6 +1,7 @@
 const Character = require("../models/character");
 const formidable = require("formidable");
 const fs = require("fs");
+var cloudinary = require('cloudinary').v2;
 const path = require('path');
 
 exports.getCharacterById = (req, res, next, id) => {
@@ -21,7 +22,7 @@ exports.addCharacter = (req, res) => {
   });
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, file) => {
+  form.parse(req, async (err, fields, file) => {
     const { name } = fields;
 
     if(err) {
@@ -36,36 +37,37 @@ exports.addCharacter = (req, res) => {
 
     
     if(file.avatar) {
-      character.avatar.data = fs.readFileSync(file.avatar.path);
-      character.avatar.contentType = file.avatar.type;
+      const result = await cloudinary.uploader.upload(file.avatar.path);
+      character.avatar = result.url;
     }
 
     if(file.portrait) {
-      character.portrait.data = fs.readFileSync(file.portrait.path);
-      character.portrait.contentType = file.portrait.type;
+      const result = await cloudinary.uploader.upload(file.portrait.path);
+      character.portrait = result.url;
     }
     
     if(file.landscape) {
-      character.landscape.data = fs.readFileSync(file.landscape.path);
-      character.landscape.contentType = file.landscape.type;
+      const result = await cloudinary.uploader.upload(file.landscape.path);
+      character.landscape =result.url;
     }
-
+    
     character.save((err, result) => {
       if(err) {
-        res.json.status(400).json({
+        res.status(400).json({
           error: true,
           message: "Unabe to save character"
         });
+        return;
       }
       res.status(200).json({
-        error: false
+        error: false,
       });
     });
   })
 }
 
 exports.getAllCharacters = (req, res) => {
-  Character.find().select(["-avatar","-landscape","-portrait"]).exec((err, characters) => {
+  Character.find().select().exec((err, characters) => {
     if (err) {
       res.status(400).json({
         error: true,
