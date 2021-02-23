@@ -67,7 +67,7 @@ exports.addCharacter = (req, res) => {
 }
 
 exports.getAllCharacters = (req, res) => {
-  Character.find().select().exec((err, characters) => {
+  Character.find().exec((err, characters) => {
     if (err) {
       res.status(400).json({
         error: true,
