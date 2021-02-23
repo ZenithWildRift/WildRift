@@ -36,7 +36,9 @@ app.use("/api", require('./routes/Match'));
 app.use("/api", require('./routes/User'));
 app.use("/api", require('./routes/Characters'));
 
-
+app.use((err, req, res, next) => {
+  console.log(err);
+})
 
 // PORT
 const port = process.env.PORT || 8000;

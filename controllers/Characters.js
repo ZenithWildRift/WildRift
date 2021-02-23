@@ -73,6 +73,8 @@ exports.getAllCharacters = (req, res) => {
         error: true,
         message: "Cannot fetch characters"
       });
+      console.log(err);
+      return;
     }
 
     res.json({
