@@ -1,9 +1,11 @@
 var router = require("express").Router();
+var cors = require('cors')
+
 const { addCharacter, getAllCharacters, getCharacterById, getCharImage, deleteCharacter, updateCharacter } = require("../controllers/Characters");
 
 router.param("charId", getCharacterById);
 
-router.get('/characters', getAllCharacters);
+router.get('/characters', cors(), getAllCharacters);
 // id:  char Object id
 // type: avatar|landscape|portrait
 router.get('/getcharimage', getCharImage)
