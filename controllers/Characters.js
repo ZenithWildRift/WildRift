@@ -77,7 +77,7 @@ exports.getAllCharacters = (req, res) => {
       return;
     }
 
-    res.json({
+    res.status(200).json({
       error : false,
       characters
     })

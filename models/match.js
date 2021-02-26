@@ -4,6 +4,11 @@ var matchSchema =  new mongoose.Schema({
   name: {
     type: String,
   },
+
+  ready: {
+    type: Boolean,
+    default: 0
+  },
   
   checkTeamA: {
     type: Boolean,
@@ -20,8 +25,7 @@ var matchSchema =  new mongoose.Schema({
       type: String,
     },
     image: {
-      data: Buffer,
-      contentType: String
+      type: String
     },
   },
 
@@ -30,8 +34,7 @@ var matchSchema =  new mongoose.Schema({
       type: String,
     },
     image: {
-      data: Buffer,
-      contentType: String
+      type: String
     },
   },
 
@@ -40,21 +43,13 @@ var matchSchema =  new mongoose.Schema({
       type: String,
     },
     image: {
-    data: Buffer,
-    contentType: String
+      type: String
     }
   },
 
-  links: {
-    teamA: {
-      type: String,
-    },
-    teamB: {
-      type: String,
-    },
-    organisation: {
-      type: String,
-    },
+  turn : {
+    type: String,
+    default: ''
   },
 
   template: {
@@ -73,7 +68,12 @@ var matchSchema =  new mongoose.Schema({
   },
 
   bannedList: {
-    types: Array,
+    type: Array,
+  },
+
+  completed: {
+    type: Boolean,
+    default: 0
   },
 
   bannedCharaters: {
@@ -81,7 +81,7 @@ var matchSchema =  new mongoose.Schema({
     teamB: [],
   },
 
-  SelectedCharacters: {
+  selectedCharacters: {
     teamA: [],
     teamB: []
   },

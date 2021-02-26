@@ -1,7 +1,7 @@
 var cloudinary = require('cloudinary').v2;
 
 module.exports = {
-  URL: "http://localhost:3000/match",
+  URL: "http://localhost:3000",
 }
 
 cloudinary.config({ 

@@ -2,79 +2,115 @@ const Match = require('../models/match');
 const formidable = require("formidable");
 const fs = require('fs');
 const path = require('path');
+var cloudinary = require('cloudinary').v2;
 const { URL } = require("../cofig");
 
-exports.createMatch = (req, res) => {
-  const { name, teamA, teamB , organisation } = req.body;
-
-  const match = new Match();
-
-  match.name = name;
-  match.teamA.name = teamA;
-  match.teamB.name = teamB;
-  match.organisation.name = organisation;
-
-  match.save((err, result) => {
+exports.getMatchById = (req, res, next, id) => {
+  Match.findById(id).exec((err, match) => {
     if(err) {
+      console.log(err);
       res.status(400).json({
-        message:  "Cannot save match"
+        error:true,
+        message: "Cannot find by id"
       })
+      return;
     }
-    res.status(200).json(result);
+    req.match = match;
+    next();
   })
-
 }
 
-exports.addMatchImages = (req, res) => {
-  let form = new formidable({multiples : true});
+exports.getMatch = (req, res) =>{
+  let match = req.match;
+  res.status(200).json({
+    error: false,
+    match
+  })
+}
+
+exports.createMatch = (req, res) => {
+  let form = formidable.IncomingForm({
+    multiples: true,
+  });
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, files) => {
-    const { id } = fields;
+  error: "problem with files"
+  form.parse(req, async (err, fields, file) => {
+    const { name, teamA, teamB , organisation } = fields;
+    
     if(err) {
       return res.status(400).json({
-        error: "problem with image"
       });
     }
-    
-    // if(!checkFileSize(file)) {
-    //   return res.status(400).json({
-    //     error: "File size is too big"
-    //   })
-    // }
 
-    Match.findById(id).exec((err, match) => {
+    const match = new Match();
+
+    match.name = name;
+    match.teamA.name = teamA;
+    match.teamB.name = teamB;
+    match.organisation.name = organisation;
+
+    if(file.imageA) {
+      const result = await cloudinary.uploader.upload(file.imageA.path);
+      match.teamA.image = result.url;
+    }
+    if(file.imageB) {
+      const result = await cloudinary.uploader.upload(file.imageB.path);
+      match.teamB.image = result.url;
+    }
+    if(file.imageOrg) {
+      const result = await cloudinary.uploader.upload(file.imageOrg.path);
+      match.organisation.image = result.url;
+    }
+
+    match.save((err, result) => {
       if(err) {
-        return res.status(400).json({
-          error: "Match not found"
-        })
+        res.status(400).json({
+          error: true,
+          message: "Unabe to save character"
+        });
+        return;
       }
-
-      match.teamA.image.data = fs.readFileSync(files.teamA.path);
-      match.teamA.image.contentType = files.teamA.type;
-
-      match.teamB.image.data = fs.readFileSync(files.teamB.path);
-      match.teamB.image.contentType = files.teamB.type;
-      
-      match.organisation.image.data = fs.readFileSync(files.organisation.path);
-      match.organisation.image.contentType = files.organisation.type;
-
-      match.save((err, result) => {
-        if (err) {
-          res.status(400).json({
-            error: "Updation of product failed"
-          });
-        }
-        res.json(result);
-      })
-    }) 
-
-  });
+      res.status(200).json({
+        error: false,
+        result
+      });
+    })
+  })
 }
 
-// exports.customTheme = (req, res) => {
-//   const { header, background, teamA, teamB } = req.body;
-// }
+exports.deleteMatch = (req, res) => {
+  let match = req.match;
+  match.remove((err, result) => {
+    if (err) {
+      return res.status(400).json({
+        error: true,
+        message: "Failed to delete the Match"
+      });
+    }
+    res.json({
+      error: false,
+    });
+  })
+}
+
+exports.getAllMatches = (req, res) => {
+  Match.find().exec((err, matches) => {
+    if (err) {
+      res.status(400).json({
+        error: true,
+        message: "Cannot fetch Matches"
+      });
+      console.log(err);
+      return;
+    }
+
+    res.json({
+      error : false,
+      matches
+    })
+  })
+}
 
 exports.createLinks =(req, res) => {
   const { id } = req.body;
@@ -110,4 +146,31 @@ const checkFileSize = (file) => {
       return false;
     }
   }
+}
+
+exports.resetMatch = (req, res) => {
+  const match = req.match;
+  match.checkTeamA = false;
+  match.checkTeamB = false;
+  match.turn = "";
+  match.ready = false;
+  match.bannedCharaters = {
+    teamA: [],
+    teamB: [],
+  }
+  match.selectedCharacters = {
+    teamA: [],
+    teamB: []
+  }
+  match.save((err, result) => {
+    if (err) {
+      res.status(400).json({
+        error: "Updation of product failed"
+      });
+    }
+    res.status(200).json({
+      error: false,
+      result
+    });
+  })
 }
