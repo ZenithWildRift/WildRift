@@ -30,9 +30,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "pm2": "pm2 start app.js",
-    "start1": "nodemon app.js",
-    "start": "pm2 start app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "netlify-start": "./node_modules/.bin/netlify-lambda serve ./",
     "netlify-build": "./node_modules/.bin/netlify-lambda build ./"
