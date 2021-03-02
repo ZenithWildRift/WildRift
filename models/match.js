@@ -1,98 +1,99 @@
-  var mongoose = require("mongoose");
+var mongoose = require("mongoose");
 
-var matchSchema =  new mongoose.Schema({
-  name: {
-    type: String,
-  },
-
-  ready: {
-    type: Boolean,
-    default: 0
-  },
-  
-  checkTeamA: {
-    type: Boolean,
-    default: 0
-  },
-
-  checkTeamB: {
-    type: Boolean,
-    default: 0
-  },
-
-  teamA: {
+var matchSchema = new mongoose.Schema(
+  {
     name: {
       type: String,
     },
-    image: {
-      type: String
-    },
-  },
 
-  teamB: {
-    name: {
+    ready: {
+      type: Boolean,
+      default: 0,
+    },
+
+    checkTeamA: {
+      type: Boolean,
+      default: 0,
+    },
+
+    checkTeamB: {
+      type: Boolean,
+      default: 0,
+    },
+
+    teamA: {
+      name: {
+        type: String,
+      },
+      image: {
+        type: String,
+      },
+    },
+
+    teamB: {
+      name: {
+        type: String,
+      },
+      image: {
+        type: String,
+      },
+    },
+
+    organisation: {
+      name: {
+        type: String,
+      },
+      image: {
+        type: String,
+      },
+    },
+
+    turn: {
       type: String,
+      default: "",
     },
-    image: {
-      type: String
+
+    template: {
+      header: {
+        type: String,
+      },
+      background: {
+        type: String,
+      },
+      teamA: {
+        type: String,
+      },
+      teamB: {
+        type: String,
+      },
     },
-  },
 
-  organisation: {
-    name: {
-      type: String,
+    bannedList: {
+      type: Array,
     },
-    image: {
-      type: String
-    }
-  },
 
-  turn : {
-    type: String,
-    default: ''
-  },
-
-  template: {
-    header: {
-      type: String,
+    completed: {
+      type: Boolean,
+      default: 0,
     },
-    background: {
-      type: String,
+
+    bannedCharaters: {
+      teamA: [],
+      teamB: [],
     },
-    teamA : {
-      type: String,
+
+    selectedCharacters: {
+      teamA: [],
+      teamB: [],
     },
-    teamB : {
-      type: String,
-    }
-  },
 
-  bannedList: {
-    type: Array,
-  },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
 
-  completed: {
-    type: Boolean,
-    default: 0
   },
-
-  bannedCharaters: {
-    teamA: [],
-    teamB: [],
-  },
-
-  selectedCharacters: {
-    teamA: [],
-    teamB: []
-  },
-
-  createdAt: {
-    type:Date,
-    default: Date.now()
-  },
-
-},
-  {timestamps: true}
-)
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Match", matchSchema);

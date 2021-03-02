@@ -1,4 +1,5 @@
 const Match = require('../models/match');
+const Character = require("../models/character");
 const formidable = require("formidable");
 const fs = require('fs');
 const path = require('path');
@@ -154,6 +155,7 @@ exports.resetMatch = (req, res) => {
   match.checkTeamB = false;
   match.turn = "";
   match.ready = false;
+  match.bannedList = [];
   match.bannedCharaters = {
     teamA: [],
     teamB: [],

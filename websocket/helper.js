@@ -17,6 +17,7 @@ exports.readyCheck = (team_id, socket) => {
         match.ready = true;
         //OO teamA, 11 teamB
         match.turn= "00";
+        socket.timerOn = true;
       }
 
       match.save((err, result) => {
@@ -25,13 +26,14 @@ exports.readyCheck = (team_id, socket) => {
             error: true,
             message: "Unabe to save character"
           })}
+        
         socket.nsp.to(socket.match_id).emit("checkUpdate", match);
         return;
       })        
   })
 }
 
-exports.SelectCharacter = (character, team_id, socket)  => {
+exports.SelectCharacter = (character, index, team_id, socket)  => {
   Match.findById(socket.match_id).exec((err, match) => {
 
     const { bannedCharaters, selectedCharacters } = match;
@@ -65,6 +67,13 @@ exports.SelectCharacter = (character, team_id, socket)  => {
           match.turn = "00";
         }
       }
+
+      match.bannedList.push(index);
+      if(checkBanned) {
+        match.turn = checkTurns(match);
+      }
+
+      console.log(match.turn);
     
       match.save((err, result) => {
         if(err) {
@@ -74,7 +83,37 @@ exports.SelectCharacter = (character, team_id, socket)  => {
           })}
         socket.nsp.to(socket.match_id).emit("checkUpdate", match);
         return;
-      })      
-
+      })
   })
+}
+
+// const Timer = (socket) => {
+
+// }
+
+
+
+const checkTurns = (match) => {
+  const {selectedCharacters} = match;
+  const {teamA, teamB} = selectedCharacters;
+  if(selectedCharacters.teamA.length === 1 && teamB.length === 0) {
+    return "11"; //2
+  } else if (teamA.length === 1 && teamB.length === 1) {
+    return "11";//3
+  } else if (teamA.length === 1 && teamB.length === 2) {
+    return "00";//4
+  } else if (teamA.length === 2 && teamB.length === 2) {
+    return "00";//
+  } else if (teamA.length === 3 && teamB.length === 2) {
+    return "11";//
+  } else if (teamA.length === 3 && teamB.length === 3) {
+    return "11";//
+  } else if (teamA.length === 3 && teamB.length === 4) {
+    return "00";//
+  } else if (teamA.length === 4 && teamB.length === 4) {
+    return "00";//
+  } else if (teamA.length === 5 && teamB.length === 4) {
+    return "11";//
+  }
+  
 }
