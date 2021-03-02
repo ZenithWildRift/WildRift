@@ -24,21 +24,21 @@ io.on('connection', socket => {
     //data include - character, team_id
     socket.on('select_character', data => SelectCharacter(data.character, data.index, data.team_id, socket));
 
-    if(socket.timerOn) {
-      console.log("Cahl rha h")
-      setInterval(() => {
-        counter -= 1000;
-        socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
-      }, totalCount);
-    }
+    // if(socket.timerOn) {
+    //   console.log("Cahl rha h")
+    //   setInterval(() => {
+    //     counter -= 1000;
+    //     socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
+    //   }, totalCount);
+    // }
 
-    socket.on('start_timer', () => {
-      console.log("kuchh ho bhai")
-      setInterval(() => {
-        counter -= 1000;
-        socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
-      }, totalCount);
-    })
+    // socket.on('start_timer', () => {
+    //   console.log("kuchh ho bhai")
+    //   setInterval(() => {
+    //     counter -= 1000;
+    //     socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
+    //   }, totalCount);
+    // })
 
   })
 })
