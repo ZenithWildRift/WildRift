@@ -54,9 +54,6 @@ var matchSchema = new mongoose.Schema(
     },
 
     template: {
-      header: {
-        type: String,
-      },
       background: {
         type: String,
       },
@@ -65,6 +62,12 @@ var matchSchema = new mongoose.Schema(
       },
       teamB: {
         type: String,
+      },
+      textColor: {
+        type: String
+      },
+      selectionBox: {
+        type: String
       },
     },
 

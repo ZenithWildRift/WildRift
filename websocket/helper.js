@@ -17,7 +17,7 @@ exports.readyCheck = (team_id, socket) => {
         match.ready = true;
         //OO teamA, 11 teamB
         match.turn= "00";
-        socket.timerOn = true;
+        // socket.timerOn = true;
       }
 
       match.save((err, result) => {
@@ -26,6 +26,7 @@ exports.readyCheck = (team_id, socket) => {
             error: true,
             message: "Unabe to save character"
           })}
+      
         
         socket.nsp.to(socket.match_id).emit("checkUpdate", match);
         return;
