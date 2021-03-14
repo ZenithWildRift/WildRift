@@ -57,6 +57,9 @@ var matchSchema = new mongoose.Schema(
       background: {
         type: String,
       },
+      backgroundImage: {
+        type: String,
+      },
       teamA: {
         type: String,
       },

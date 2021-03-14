@@ -47,6 +47,7 @@ exports.createMatch = (req, res) => {
       backgroundB,
       textColor,
       selectionBox,
+      backgroundImage
     } = fields;
 
     if (err) {
@@ -77,6 +78,10 @@ exports.createMatch = (req, res) => {
     if (file.imageOrg) {
       const result = await cloudinary.uploader.upload(file.imageOrg.path);
       match.organisation.image = result.url;
+    }
+    if(file.backgroundImage) {
+      const result = await cloudinary.uploader.upload(file.backgroundImage.path);
+      match.template.backgroundImage = result.url;
     }
 
     match.save((err, result) => {
