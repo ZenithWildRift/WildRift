@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 const server = http.createServer(app)
+const { middleware } = require('./helper');
 
 global.server = server;
 
@@ -36,6 +37,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 
+app.use(middleware);
 //Register Routes
 app.use("/api", require('./routes/Auth'));
 app.use("/api", require('./routes/Match'));

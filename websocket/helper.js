@@ -1,7 +1,7 @@
 const Match = require("../models/match");
 
 
-exports.readyCheck = (team_id, socket) => {
+exports.readyCheck = (team_id, socket, next) => {
   const check = team_id === "00" ? "checkTeamA" : "checkTeamB";
 
   Match.findById(socket.match_id).exec((err, match) => {
@@ -17,7 +17,6 @@ exports.readyCheck = (team_id, socket) => {
         match.ready = true;
         //OO teamA, 11 teamB
         match.turn= "00";
-        // socket.timerOn = true;
       }
 
       match.save((err, result) => {
@@ -29,9 +28,9 @@ exports.readyCheck = (team_id, socket) => {
       
         
         socket.nsp.to(socket.match_id).emit("checkUpdate", match);
-        return;
       })        
   })
+  next();
 }
 
 exports.SelectCharacter = (character, index, team_id, socket)  => {

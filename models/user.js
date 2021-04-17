@@ -18,23 +18,26 @@ var userSchema =  new mongoose.Schema({
     lowercase: true,
   },
 
-  image: String,
-
-  phone: {
-    type: String,
-    trim: true,
-  },
-  
-  //SuperAdmin
+  // SuperAdmin
   admin: {
     type: Boolean,
     default: 0,
   },
 
-  //Normal Access Staff
+  // Normal Access Staff
   staff: {
     type: Boolean,
     default: 0,
+  },
+
+  // Organisation Access
+  organisation: {
+    type: Boolean,
+    default: 0
+  },
+  
+  organisation_name: {
+    type: String,
   },
 
   encry_password :{

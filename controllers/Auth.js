@@ -3,11 +3,24 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 
 exports.createUser = (req, res) => {
-  const user = new User(req.body);
+  const {email, password, type, username, organisation} = req.body;
+  const user = new User();
+  user.email = email;
+  user.password = password;
+  user.username = username;
+
+  switch(type) {
+    case 'staff':
+      user.staff = true; 
+      break;
+    case 'organisation':
+      user.organisation = true,
+      user.organisation_name = organisation;
+      break;
+  }
 
   user.save((err, result) => {
     if(err) {
-      console.log(err);
       res.status(400).json({
         error: true,
         err
@@ -22,27 +35,48 @@ exports.createUser = (req, res) => {
   })
 }
 
+exports.getUser = (req, res) => {
+  const { id } = req.body;
+
+  User.findById(id, (err, user) => {
+    if(err) {
+      return res.status(404).json({
+        message: "Can't find the user"
+      })
+    }
+    res.status(200).json({
+      message: 'Ok',
+      user
+    })
+  })
+}
+
 exports.signIn = (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   
-  User.findOne({username}, (err, user) => {
+  User.findOne({ email }, (err, user) => {
     if(err || !user){
-      return res.status(400).json({
-          error: "User email does not exist"
+      return res.status(404).json({
+          message: "User not found"
       });
     }
     if(!user.authenticate(password)){
       return res.status(401).json({
-          error:"Email and password do not match"
+          messasge:"Email and password do not match"
       });
     }
+    
+    if(!user.staff && !user.admin) {
+      return res.status(401).json({message: "Access not verified. Contact admins"})
+    }
 
-    const token = jwt.sign({ _id: user._id, admin: user.admin}, process.env.SECRET);
+    const jwtBody = { _id: user._id, admin: user.admin, staff: user.staff, organisation: user.organisation, organisation_name: user.organisation_name}
+
+    const token = jwt.sign( jwtBody, process.env.SECRET);
 
     res.cookie("token", token, {expire: new Date()+99})
     
-    const {name, email} = user;
-    return res.json({ token, user:{ name, email} })
+    return res.json(token);
 
   })
 
@@ -71,3 +105,33 @@ exports.isAuthenticated = (req, res, next) => {
     })
   }
 }
+
+exports.addAccess = (req, res) => {
+  let user = req.user;
+  const {email} = req.body;
+  console.log(user)
+  if(user.admin) {
+    User.findOneAndUpdate({ email }, {staff: true}, {new: true}, (err, result) => {
+      if(err) {
+        return res.status(400).json({err});
+      }
+      console.log(result)
+      res.status(200).json({ message: 'OK'});
+    });
+  }
+}
+
+exports.revokeAccess = (req, res) => {
+  let user = req.user;
+  const {email} = req.body;
+  if(user.admin) {
+    User.findOneAndUpdate({ email }, {staff: false}, {new: true }, (err, response) => {
+      if(err) {
+        return res.status(400).json({err});
+      }
+      console.log(response)
+      res.status(200).json({ message: 'OK'});
+    });
+  }
+}
+

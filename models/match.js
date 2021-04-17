@@ -10,7 +10,10 @@ var matchSchema = new mongoose.Schema(
       type: Boolean,
       default: 0,
     },
-
+    timer: {
+      type: Boolean,
+      default: 0
+    },
     checkTeamA: {
       type: Boolean,
       default: 0,
@@ -26,7 +29,12 @@ var matchSchema = new mongoose.Schema(
         type: String,
       },
       image: {
-        type: String,
+        url: {
+          type: String
+        },
+        public_id: {
+          type: String
+        }
       },
     },
 
@@ -35,7 +43,12 @@ var matchSchema = new mongoose.Schema(
         type: String,
       },
       image: {
-        type: String,
+        url: {
+          type: String
+        },
+        public_id: {
+          type: String
+        }
       },
     },
 
@@ -44,7 +57,12 @@ var matchSchema = new mongoose.Schema(
         type: String,
       },
       image: {
-        type: String,
+        url: {
+          type: String
+        },
+        public_id: {
+          type: String
+        }
       },
     },
 
@@ -58,7 +76,12 @@ var matchSchema = new mongoose.Schema(
         type: String,
       },
       backgroundImage: {
-        type: String,
+        url: {
+          type: String
+        },
+        public_id: {
+          type: String
+        }
       },
       teamA: {
         type: String,
@@ -73,6 +96,8 @@ var matchSchema = new mongoose.Schema(
         type: String
       },
     },
+
+    author: {type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
     bannedList: {
       type: Array,

@@ -1,5 +1,6 @@
 const Match = require("../models/match");
 const { readyCheck, SelectCharacter } = require("./helper");
+const { default: switchCounter } = require("./switchCounter");
 
 const io = require('socket.io')(server, {
   cors: {
@@ -9,9 +10,9 @@ const io = require('socket.io')(server, {
 });
 
 io.on('connection', socket => {
-  console.log("connected");
-  totalCount = 30000;
-  counter = 30000;
+  timerOn = false;
+  totalCount = 1000;
+  counter = 30;
   
   socket.on("join", (data) => {
     console.log(`JOining ${data.match_id}`)
@@ -19,26 +20,31 @@ io.on('connection', socket => {
     socket.join(data.match_id);
     socket.match_id = data.match_id;
 
-    socket.on('readyCheck', team_id => readyCheck(team_id, socket))
+    // Callback to change socket variable
+    socket.on('readyCheck', team_id => readyCheck(team_id, socket, () => {
+      timerOn = true;console.log("runnning")
+    }))
     
     //data include - character, team_id
     socket.on('select_character', data => SelectCharacter(data.character, data.index, data.team_id, socket));
+  
+// console.log({timerOn})
+//     if(socket.timerOn) {
+//       console.log("Cahl rha h")
+//       setInterval(() => {
+//         counter -= 1000;
+//         socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
+//       }, totalCount);
+//     }
 
-    // if(socket.timerOn) {
-    //   console.log("Cahl rha h")
-    //   setInterval(() => {
-    //     counter -= 1000;
-    //     socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
-    //   }, totalCount);
-    // }
-
-    // socket.on('start_timer', () => {
-    //   console.log("kuchh ho bhai")
-    //   setInterval(() => {
-    //     counter -= 1000;
-    //     socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
-    //   }, totalCount);
-    // })
+    socket.on('start_timer', () => {
+      console.log("kuchh ho bhai")
+      setInterval(() => {
+        counter -= 1;
+        console.log(counter);
+        socket.nsp.to(socket.match_id).emit("timer_count", {counter : counter});
+      }, totalCount);
+    })
 
   })
 })
