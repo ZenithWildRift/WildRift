@@ -8,16 +8,7 @@ exports.createUser = (req, res) => {
   user.email = email;
   user.password = password;
   user.username = username;
-
-  switch(type) {
-    case 'staff':
-      user.staff = true; 
-      break;
-    case 'organisation':
-      user.organisation = true,
-      user.organisation_name = organisation;
-      break;
-  }
+  user.organisation_name = organisation;
 
   user.save((err, result) => {
     if(err) {
@@ -109,13 +100,11 @@ exports.isAuthenticated = (req, res, next) => {
 exports.addAccess = (req, res) => {
   let user = req.user;
   const {email} = req.body;
-  console.log(user)
   if(user.admin) {
     User.findOneAndUpdate({ email }, {staff: true}, {new: true}, (err, result) => {
       if(err) {
         return res.status(400).json({err});
       }
-      console.log(result)
       res.status(200).json({ message: 'OK'});
     });
   }
@@ -129,7 +118,6 @@ exports.revokeAccess = (req, res) => {
       if(err) {
         return res.status(400).json({err});
       }
-      console.log(response)
       res.status(200).json({ message: 'OK'});
     });
   }

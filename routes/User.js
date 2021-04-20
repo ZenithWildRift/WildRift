@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { createUser, signIn, signout, revokeAccess, addAccess } = require('../controllers/Auth');
+const { getOrganisations } = require('../controllers/User');
 const User = require("../models/user");
 
 router.get('/test', (req, res) => {
@@ -20,6 +21,8 @@ router.post('/user/create', createUser);
 router.post('/user/signin', signIn);
 
 router.get('/user/signout', signout)
+
+router.get('/user/get-organisations', getOrganisations);
 
 router.post('/user/access', addAccess);
 router.post('/user/revoke-access', revokeAccess);
